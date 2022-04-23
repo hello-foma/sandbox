@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Sandbox navigation</title>
+</head>
+<body>
+<header>
+    <h1 id="title">Title</h1>
+</header>
+<aside>
+    <nav>
+        <!--        todo: hide back and forward buttons if empty-->
+        <a id="back-button">back</a>
+        <a id="forward-button">forward</a>
+        <a class="navigation-item" href="bedroom">Bedroom</a>
+        <a class="navigation-item" href="kitchen">Kitchen</a>
+        <a class="navigation-item" href="small-Appliances">Small Appliances</a>
+        <a class="navigation-item" href="toasters">Toasters</a>
+    </nav>
+</aside>
+<section>
+    <div id="history"></div>
+</section>
+<script>
+    const isObject = (a) => typeof a === 'object' && a !== null;
+
+    class Stack {
+        items = [];
+
+        constructor(items = []) {
+            this.items = items;
+        }
+
+        get length() {
+            return this.items.length;
+        }
+
+        push(item) {
+            this.items.push(item);
+        }
+
+        pop() {
+            if (this.length === 0) {
+                return void 0;
+            }
+
+            return this.items.pop();
+        }
+
+        peek() {
+            if (this.length === 0) {
+                return void 0;
+            }
+
+            return this.items[this.length - 1];
+        }
+
+        isEmpty() {
+            return this.length === 0;
+        }
+
+        clone() {
+            return new Stack([...this.items]);
+        }
+    }
+
+    class Navigation {
+        backStack = new Stack();
+        forwardStack = new Stack();
+
+        navigateTo(item) {
+            const currentUrl = this.backStack.peek();
+            if (currentUrl && (currentUrl.url === item.url)) {
+                return;
+            }
+
+            this.forwardStack = new Stack();
+            this.backStack.push(item);
+        }
+
+        back() {
+            const backState = this.backStack.pop();
+            if (!isObject(backState)) {
+                return;
+            }
+
+            this.forwardStack.push(backState);
+        }
+
+        forward() {
+            const forwardState = this.forwardStack.pop();
+            if (!isObject(forwardState)) {
+                return;
+            }
+
+            this.backStack.push(forwardState);
+        }
+
+        getHistory() {
+            const newStack = this.backStack.clone();
+            const links = [];
+
+            while (!newStack.isEmpty()) {
+                links.unshift(newStack.pop());
+            }
+
+            return links;
+        }
+
+        getTitle() {
+            const currentPage = this.backStack.peek();
+
+            if (!isObject(currentPage)) {
+                return null;
+            }
+
+            return currentPage.title;
+        }
+    }
+
+    const navigationModule = new Navigation();
+
+    const navItemElemList = document.getElementsByClassName('navigation-item');
+    const backButtonElem = document.getElementById('back-button');
+    const forwardButtonElem = document.getElementById('forward-button');
+    const historyElem = document.getElementById('history');
+    const titleElem = document.getElementById('title');
+
+    function updateTitle() {
+        const title = navigationModule.getTitle();
+
+        titleElem.innerText = title || 'Home';
+    }
+
+    function updateHistory() {
+        const history = navigationModule.getHistory();
+        historyElem.innerHTML = '';
+
+        if (history.length === 0) {
+            return;
+        }
+
+        history.forEach((historyItem) => {
+            const elem = document.createElement('span');
+            elem.innerText = " / " + historyItem.title;
+
+            historyElem.appendChild(elem);
+        });
+    }
+
+    function initNavItemElems() {
+        for (let i = 0; i < navItemElemList.length; i++) {
+            const item = navItemElemList[i];
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const title = item.text;
+                const url = item.attributes['href'];
+
+                navigationModule.navigateTo({title, url});
+                updateTitle();
+                updateHistory();
+            });
+        }
+    }
+
+    function initBackButtonElem() {
+        backButtonElem.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            navigationModule.back();
+            updateTitle();
+            updateHistory();
+        });
+    }
+
+    function initForwardButtonElem() {
+        forwardButtonElem.addEventListener('click', (e) => {
+            e.preventDefault();
+
+            navigationModule.forward();
+            updateTitle();
+            updateHistory();
+        });
+    }
+
+    initNavItemElems();
+    initBackButtonElem();
+    initForwardButtonElem();
+    updateTitle();
+    updateHistory();
+</script>
+</body>
+</html>
