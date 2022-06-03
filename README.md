@@ -18,6 +18,7 @@ Places at pramp folder
 
 | Task name                     | Date       | Was complete within 30 minutes |
 |-------------------------------|------------|--------------------------------|
+| bst_successor_search.js       | 06/03/2022 | true                           |
 | validate-ip-address.js        | 06/02/2022 | true                           |
 | absolute-value-sort.js        | 06/02/2022 | true                           |
 | getting-a-different-number.js | 06/02/2022 | true                           |
