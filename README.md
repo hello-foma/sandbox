@@ -18,6 +18,7 @@ Places at pramp folder
 
 | Task name                     | Date       | Was complete within 30 minutes |
 |-------------------------------|------------|--------------------------------|
+| busiest-time-in-the-mall.js   | 06/05/2022 | false                          |
 | merging-2-packages.js         | 06/03/2022 | true                           |
 | bst_successor_search.js       | 06/03/2022 | true                           |
 | validate-ip-address.js        | 06/02/2022 | true                           |
