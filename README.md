@@ -26,3 +26,4 @@ Places at pramp folder
 | absolute-value-sort.js        | 06/02/2022 | true                           |
 | getting-a-different-number.js | 06/02/2022 | true                           |
 | island-count.js               | 05/25/2022 | true                           |
+| bracket-match.js              | 10/16/2022 | true                           |
